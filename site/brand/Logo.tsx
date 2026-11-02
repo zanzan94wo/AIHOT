@@ -4,14 +4,14 @@ import { SITE } from "../site.ts";
 
 export function Wordmark({ size = 24, className = "", title = SITE.name }: { size?: number; className?: string; title?: string }) {
   return (
-    <span className={`inline-flex items-center font-black leading-none tracking-[-0.03em] ${className}`} style={{ fontSize: Math.round(size * 0.92) }} aria-label={title} role="img">
-      <span aria-hidden="true" className="mr-[0.3em] inline-block size-[0.42em] rounded-full bg-accent" />
-      <span aria-hidden="true">{SITE.name}</span>
+    <span className={`inline-flex items-center font-black leading-none tracking-[-0.03em] ${className}`} style={{ fontSize: Math.round(size * 0.72) }} aria-label={title} role="img">
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="mr-[0.35em] size-[0.9em] shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="18" rx="3" /><path d="m3 18 6-7 5 5 3-3 4 5M17 6v5m-2.5-2.5h5" /></svg>
+      <span aria-hidden="true" className="whitespace-nowrap">{SITE.name}</span>
     </span>
   );
 }
 
-/** A ring with a dot; spinning, it is the loader. */
+/** 圆环与圆点组成加载标记。 */
 export function RingMark({ className = "", spinning = false }: { className?: string; spinning?: boolean }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true">

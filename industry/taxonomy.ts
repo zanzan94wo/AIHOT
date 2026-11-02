@@ -12,12 +12,12 @@
  * feedLabel 是分类 RSS 标题里的名字（不写就用 label）。公开接口、RSS 和 MCP 里要把一类并进另一类发布，写在站点设置里（site/site.ts 的 PUBLIC_CATEGORIES）。
  */
 export const CATEGORIES = [
-  { key: "ai-models", tagColor: "indigo", label: "模型", feedLabel: "AI 模型", section: "模型发布/更新", guide: "模型本身的发布、版本、权重开放、能力或价格变化，以及既有榜单上的模型成绩。公布一次跑分不是发布新基准，也不是教程。" },
-  { key: "ai-products", tagColor: "turquoise", label: "产品", feedLabel: "AI 产品", section: "产品发布/更新", guide: "可使用的 AI 产品、功能、应用、工具、API、平台和工程组件的发布更新。模型厂商发布的推理框架、算子库、硬件适配组件仍是产品，不能因为厂商名归成模型。" },
-  { key: "industry", tagColor: "orange", label: "行业", feedLabel: "行业动态", section: "行业动态", guide: "已发生的公司经营、融资并购、人事、合作、诉讼、政策、真实安全事故及调查进展。新闻由当事人发帖、带有态度，也不因此变成观点。" },
-  { key: "paper", tagColor: "violet", label: "论文", feedLabel: "论文", section: "论文研究", guide: "以新研究方法、实验设计与发现为核心的论文、技术报告、新基准或研究数据集。系统性红队实验属于研究；既有榜单成绩归模型，真实事故的新闻调查归行业。" },
-  { key: "tip", tagColor: "green", label: "教程", section: "技巧与观点", guide: "读者可以照着使用的方法、提示词、工具用法、工程实践复盘与技术讲解。重点是可复用的做法；单纯发布工具归产品，只有态度和预测而无做法归观点。", commentary: true },
-  { key: "opinion", tagColor: "purple", label: "观点", section: "技巧与观点", guide: "重点是作者的解释、判断、主张、预测、评论或访谈观点。讨论市场不自动归行业，作者是名人不自动归观点。", commentary: true },
+  { key: "ai-models", tagColor: "indigo", label: "模型更新", feedLabel: "生图模型更新", section: "生图模型更新", guide: "直接改变生图或图像编辑提示词写法、控制能力、可用性与成本的模型发布和更新；模型名称本身不是分类依据，既有模型的提示词案例归实战。" },
+  { key: "ai-products", tagColor: "turquoise", label: "创作工具", feedLabel: "生图创作工具", section: "创作工具与工作流", guide: "帮助编写、管理、测试生图提示词或控制图像生成的工具和功能发布。已有工具的用法、可复用工作流和参数教程归提示词实战。" },
+  { key: "industry", tagColor: "orange", label: "规则动态", feedLabel: "生图规则与授权", section: "创作规则与授权", guide: "直接影响生图实践的授权、平台规则、内容政策与服务变化；无关的融资、人事、算力和泛 AI 行业新闻不收。" },
+  { key: "paper", tagColor: "violet", label: "生图研究", feedLabel: "生图研究", section: "生图研究", guide: "以实验为核心、能解释提示词遵循、构图、文字渲染、图像编辑与可控生成的研究；使用已有模型的普通效果对比归评测解析。" },
+  { key: "tip", tagColor: "green", label: "提示词实战", section: "提示词与创作实践", guide: "可借鉴的生图提示词、参数、参考图用法、角色一致性方法、工作流和创作教程；按实际适用模型与用途打标签，不把教程写成模型发布。", commentary: true },
+  { key: "opinion", tagColor: "purple", label: "评测解析", section: "效果对比与经验", guide: "围绕生图任务的模型比较、失败复盘、提示词效果解释与创作经验判断；以步骤和可复用提示词为核心的内容归实战。", commentary: true },
 ] as const satisfies ReadonlyArray<{ key: string; tagColor: string; label: string; feedLabel?: string; section: string; guide: string; commentary?: true }>;
 
 /**
@@ -25,10 +25,10 @@ export const CATEGORIES = [
  * category 是类别，tag 是标签，两者都对上才算；unit 接在数字后面。
  * 没有这样一类的行业设成 null，报头就不显示这个数。
  */
-export const RELEASE: { category: string; tag: string; unit: string } | null = { category: "ai-models", tag: "模型发布", unit: "个新模型" };
+export const RELEASE: { category: string; tag: string; unit: string } | null = { category: "ai-models", tag: "模型发布", unit: "个生图模型更新" };
 
 /** 周报月报的总述可以直接写、不必在报道里找到出处的行业通用词（小写）。站名会自动算进去。 */
-export const PLAIN_TERMS: readonly string[] = ["ai", "api", "llm", "gpu", "agi", "ceo", "ipo"];
+export const PLAIN_TERMS: readonly string[] = ["ai", "api", "gpu", "prompt", "seed", "cfg", "lora", "controlnet", "comfyui", "dpi", "svg"];
 
 /**
  * 内容理解一步给每篇资料判的“内容类型”（写在 prompts/content-understanding.md 里，改了类型要同步改那份提示词）。
@@ -40,29 +40,34 @@ export const ITEM_TYPES = ["model_release", "product_launch", "tool_or_prompt", 
 
 /** 每篇资料的第一个标签必须是这些“分类标签”之一。 */
 export const CATEGORY_TAGS = [
-  "产品更新", "模型发布", "论文/研究", "开源/仓库", "教程/实践", "现象/趋势", "大佬观点", "评测/基准", "安全/对齐", "行业动态", "政策/监管",
-  "非AI/通用工具", "其他",
+  "产品更新", "模型发布", "论文/研究", "开源/仓库", "教程/实践", "现象/趋势", "经验/观点", "评测/基准", "安全/对齐", "行业动态", "政策/监管",
+  "提示词/模板", "其他",
 ] as const;
 
 /** 可选的主题标签。 */
 export const TOPIC_TAGS = [
-  "Agent", "编码", "推理", "多模态", "语音", "视频", "图像生成", "RAG", "端侧", "数据/训练", "搜索", "部署/工程", "开源生态", "具身智能", "MCP/工具调用",
+  "Midjourney", "GPT Image", "Gemini 图像", "Imagen", "FLUX", "Stable Diffusion", "Seedream", "Qwen-Image", "通义万相", "其他模型", "跨模型",
+  "人像写真", "商品摄影", "海报排版", "插画动漫", "空间场景", "角色一致性", "图像编辑", "风格探索",
+  "参考图", "负面提示词", "参数调优", "局部重绘", "工作流", "LoRA", "ControlNet", "图像生成", "多模态", "开源生态",
 ] as const;
 
 /** 可选的实体标签（公司、机构、平台）。 */
-export const ENTITY_TAGS = ["OpenAI", "Anthropic", "DeepSeek", "DeepMind", "Google", "Meta", "Microsoft", "xAI", "Hugging Face", "GitHub", "arXiv"] as const;
+export const ENTITY_TAGS = ["OpenAI", "Google", "Midjourney", "Black Forest Labs", "Stability AI", "阿里通义", "字节跳动", "Adobe", "Ideogram", "Recraft", "xAI", "Hugging Face", "ComfyUI"] as const;
 
 /** 模型常写的近义词，统一成词表里的写法。 */
 export const TAG_SYNONYMS: Readonly<Record<string, string>> = {
-  "教程/玩法": "教程/实践", "技巧/最佳实践": "教程/实践", "合作/生态": "行业动态", "融资/收购": "行业动态", "公司动态": "行业动态",
-  合作: "行业动态", 生态: "行业动态", 融资: "行业动态", 收购: "行业动态", 投资: "行业动态", 并购: "行业动态",
-  政策: "政策/监管", 监管: "政策/监管", 法规: "政策/监管", 安全: "安全/对齐", 对齐: "安全/对齐",
-  论文: "论文/研究", 研究: "论文/研究", paper: "论文/研究", papers: "论文/研究",
+  "教程/玩法": "教程/实践", "技巧/最佳实践": "教程/实践", 教程: "教程/实践", 指南: "教程/实践", 技巧: "教程/实践",
+  提示词: "提示词/模板", prompt: "提示词/模板", prompts: "提示词/模板", 模板: "提示词/模板",
+  评测: "评测/基准", 对比: "评测/基准", 观点: "经验/观点", "大佬观点": "经验/观点",
   "open-source": "开源/仓库", 开源: "开源/仓库", 仓库: "开源/仓库", repo: "开源/仓库",
-  教程: "教程/实践", 玩法: "教程/实践", 指南: "教程/实践", 技巧: "教程/实践", 最佳实践: "教程/实践", 实践: "教程/实践",
-  产品: "产品更新", 更新: "产品更新", 发布: "模型发布", 模型: "模型发布", 趋势: "现象/趋势", 现象: "现象/趋势", 观点: "大佬观点",
-  视频生成: "视频", 非ai: "非AI/通用工具", "non-ai": "非AI/通用工具", 通用工具: "非AI/通用工具", 工程工具: "非AI/通用工具",
-  安全扫描: "非AI/通用工具", devops: "非AI/通用工具", 行业: "行业动态", 动态: "行业动态",
+  论文: "论文/研究", 研究: "论文/研究", paper: "论文/研究", papers: "论文/研究",
+  产品: "产品更新", 更新: "产品更新", 发布: "模型发布", 模型: "模型发布",
+  政策: "政策/监管", 监管: "政策/监管", 授权: "政策/监管", 版权: "政策/监管", 安全: "安全/对齐",
+  "合作/生态": "行业动态", "融资/收购": "行业动态", "公司动态": "行业动态", 合作: "行业动态", 趋势: "现象/趋势",
+  MJ: "Midjourney", midjourney: "Midjourney", flux: "FLUX", SDXL: "Stable Diffusion", SD: "Stable Diffusion",
+  "GPT-Image": "GPT Image", "Nano Banana": "Gemini 图像", 即梦: "Seedream", "Qwen Image": "Qwen-Image", Wan: "通义万相",
+  人像: "人像写真", 电商: "商品摄影", 海报: "海报排版", 插画: "插画动漫", 室内: "空间场景", 修图: "图像编辑",
+  "negative prompt": "负面提示词", seed: "参数调优", CFG: "参数调优", lora: "LoRA", controlnet: "ControlNet",
 };
 
 // ── 公司与主体 ──────────────────────────────────────────────────────────────────────────
@@ -74,14 +79,23 @@ export const TAG_SYNONYMS: Readonly<Record<string, string>> = {
  * 所有这些名字都用来认出说的是哪家公司，比如把事实的主体对到发布方。
  */
 export const ENTITIES: Record<string, { name: string; displayTag: string | null; aliases: string[]; orgNames?: string[]; otherNames?: string[] }> = {
+  midjourney: { name: "Midjourney", displayTag: "Midjourney", aliases: ["Midjourney", "Niji Journey"], orgNames: ["Midjourney"], otherNames: ["niji"] },
+  "black-forest-labs": { name: "Black Forest Labs", displayTag: "Black Forest Labs", aliases: ["Black Forest Labs", "BFL", "FLUX"], orgNames: ["Black Forest Labs"], otherNames: ["FLUX"] },
+  "stability-ai": { name: "Stability AI", displayTag: "Stability AI", aliases: ["Stability AI", "Stable Diffusion", "SDXL"], orgNames: ["Stability AI"], otherNames: ["Stable Diffusion"] },
+  bytedance: { name: "字节跳动", displayTag: "字节跳动", aliases: ["字节跳动", "ByteDance", "Seedream", "即梦", "Jimeng", "豆包", "Doubao"], orgNames: ["字节跳动", "ByteDance"], otherNames: ["Seedream", "即梦", "豆包"] },
+  adobe: { name: "Adobe", displayTag: "Adobe", aliases: ["Adobe", "Firefly"], orgNames: ["Adobe"], otherNames: ["Firefly"] },
+  ideogram: { name: "Ideogram", displayTag: "Ideogram", aliases: ["Ideogram"], orgNames: ["Ideogram"] },
+  recraft: { name: "Recraft", displayTag: "Recraft", aliases: ["Recraft"], orgNames: ["Recraft"] },
+  fal: { name: "fal", displayTag: null, aliases: ["fal.ai", "fal"], orgNames: ["fal"] },
+  comfy: { name: "ComfyUI", displayTag: "ComfyUI", aliases: ["ComfyUI", "Comfy"], orgNames: ["Comfy", "Comfy Org"], otherNames: ["ComfyUI"] },
   "world-labs": { name: "World Labs", displayTag: null, aliases: ["World Labs"] },
   "thinking-machines": { name: "Thinking Machines Lab", displayTag: null, aliases: ["Thinking Machines"] },
   amd: { name: "AMD", displayTag: null, aliases: ["AMD", "Advanced Micro Devices"] },
-  openai: { name: "OpenAI", displayTag: "OpenAI", aliases: ["OpenAI", "ChatGPT", "Sora", "Codex", "GPT"], orgNames: ["OpenAI"], otherNames: ["OpenAI Developers"] },
+  openai: { name: "OpenAI", displayTag: "OpenAI", aliases: ["OpenAI", "ChatGPT", "GPT Image", "DALL-E", "Sora", "Codex", "GPT"], orgNames: ["OpenAI"], otherNames: ["OpenAI Developers"] },
   anthropic: { name: "Anthropic", displayTag: "Anthropic", aliases: ["Anthropic", "Claude"], orgNames: ["Anthropic"], otherNames: ["Claude Code"] },
-  google: { name: "Google", displayTag: "Google", aliases: ["Google", "DeepMind", "Gemini", "谷歌"], orgNames: ["Google DeepMind", "Google Research", "Google", "DeepMind", "谷歌"], otherNames: ["Google AI", "Google Labs", "Google Cloud"] },
+  google: { name: "Google", displayTag: "Google", aliases: ["Google", "DeepMind", "Gemini", "Imagen", "Nano Banana", "谷歌"], orgNames: ["Google DeepMind", "Google Research", "Google", "DeepMind", "谷歌"], otherNames: ["Google AI", "Google Labs", "Google Cloud"] },
   deepseek: { name: "DeepSeek", displayTag: "DeepSeek", aliases: ["DeepSeek", "深度求索"], orgNames: ["DeepSeek", "深度求索"] },
-  qwen: { name: "千问 Qwen", displayTag: null, aliases: ["Qwen", "通义", "阿里"], orgNames: ["通义千问", "通义实验室", "阿里巴巴", "阿里云", "阿里", "Qwen Team", "Qwen", "Alibaba"], otherNames: ["千问", "千问APP", "Alibaba Cloud"] },
+  qwen: { name: "阿里通义", displayTag: "阿里通义", aliases: ["Qwen", "Qwen-Image", "通义", "通义万相", "Wan", "阿里"], orgNames: ["通义千问", "通义实验室", "阿里巴巴", "阿里云", "阿里", "Qwen Team", "Qwen", "Alibaba"], otherNames: ["千问", "千问APP", "Alibaba Cloud"] },
   kimi: { name: "月之暗面 / Kimi", displayTag: null, aliases: ["Kimi", "月之暗面", "Moonshot", "Kimi / 月之暗面"], orgNames: ["Moonshot AI", "月之暗面", "Kimi"] },
   minimax: { name: "MiniMax", displayTag: null, aliases: ["MiniMax", "海螺"], orgNames: ["MiniMax", "稀宇科技"] },
   zhipu: { name: "智谱 GLM", displayTag: null, aliases: ["智谱", "GLM", "Z.ai"], orgNames: ["智谱AI", "智谱", "Zhipu AI", "Z.ai"], otherNames: ["Zhipu"] },
@@ -99,9 +113,9 @@ export const ENTITIES: Record<string, { name: string; displayTag: string | null;
  * 行业没有这个问题时可以留空数组。
  */
 export const IDENTITY_LEXICON: ReadonlyArray<{ id: string; name: string; patterns: RegExp[] }> = [
-  { id: "openai", name: "OpenAI", patterns: [/openai|chatgpt|\bgpt-?[o\d]|\bsora\b|\bcodex\b/i] },
+  { id: "openai", name: "OpenAI", patterns: [/openai|chatgpt|\bgpt[ -]?image\b|\bdall[ -]?e\b|\bgpt-?[o\d]|\bsora\b|\bcodex\b/i] },
   { id: "anthropic", name: "Anthropic", patterns: [/anthropic|\bclaude\b/i, /\b(?:opus|sonnet|haiku)\s*\d+(?:[.\-]\d+)*\b/i, /\bfable\s*\d+(?:[.\-]\d+)*\b|\bmythos\b/i] },
-  { id: "google", name: "Google / Gemini", patterns: [/google|deepmind|\bgemini\b|notebooklm|\bveo\s?\d|\bAlphaFold\b|\bAMIE\b/i] },
+  { id: "google", name: "Google / Gemini", patterns: [/google|deepmind|\bgemini\b|\bimagen\b|\bnano banana\b|notebooklm|\bveo\s?\d|\bAlphaFold\b|\bAMIE\b/i] },
   { id: "deepseek", name: "DeepSeek", patterns: [/deepseek|深度求索/i] },
   { id: "xai", name: "xAI / Grok", patterns: [/\bxai\b|\bgrok\b/i] },
   { id: "meta", name: "Meta / Llama", patterns: [/\bMeta\b/, /\bmeta\s?ai\b|\bllama\b/i] },
@@ -115,13 +129,17 @@ export const IDENTITY_LEXICON: ReadonlyArray<{ id: string; name: string; pattern
   { id: "minimax", name: "MiniMax", patterns: [/minimax/i] },
   { id: "zhipu", name: "智谱 GLM", patterns: [/智谱|\bglm-?[4-9]/i] },
   { id: "hunyuan", name: "腾讯混元", patterns: [/混元|hunyuan/i] },
-  { id: "doubao", name: "字节豆包", patterns: [/豆包|doubao|字节跳动|bytedance/i] },
+  { id: "bytedance", name: "字节跳动", patterns: [/豆包|doubao|字节跳动|bytedance|seedream|即梦|jimeng/i] },
   { id: "mistral", name: "Mistral", patterns: [/mistral/i] },
   { id: "perplexity", name: "Perplexity", patterns: [/\bPerplexity\b/] },
   { id: "runway", name: "Runway", patterns: [/\brunway\b/i] },
   { id: "suno", name: "Suno", patterns: [/\bsuno\b/i] },
-  { id: "midjourney", name: "Midjourney", patterns: [/midjourney/i] },
-  { id: "stability-ai", name: "Stability AI", patterns: [/stability\s?ai/i] },
+  { id: "black-forest-labs", name: "Black Forest Labs", patterns: [/black forest labs|\bbfl\b|\bflux\b/i] },
+  { id: "adobe", name: "Adobe", patterns: [/adobe|\bfirefly\b/i] },
+  { id: "ideogram", name: "Ideogram", patterns: [/\bideogram\b/i] },
+  { id: "recraft", name: "Recraft", patterns: [/\brecraft\b/i] },
+  { id: "midjourney", name: "Midjourney", patterns: [/midjourney|\bniji\b/i] },
+  { id: "stability-ai", name: "Stability AI", patterns: [/stability\s?ai|stable diffusion|\bsdxl\b/i] },
   { id: "elevenlabs", name: "ElevenLabs", patterns: [/eleven\s?labs/i] },
   { id: "vllm", name: "vLLM", patterns: [/\bvllm\b/i] },
   { id: "ollama", name: "Ollama", patterns: [/\bollama\b/i] },
@@ -135,6 +153,14 @@ export const IDENTITY_LEXICON: ReadonlyArray<{ id: string; name: string; pattern
 
 /** 这些域名上的文章，发布方就是对应的公司（托管平台如 GitHub、arXiv 不算）。 */
 export const PUBLISHER_DOMAINS: ReadonlyArray<{ entityId: string; domains: readonly string[] }> = [
+  { entityId: "midjourney", domains: ["midjourney.com"] },
+  { entityId: "black-forest-labs", domains: ["bfl.ai", "blackforestlabs.ai"] },
+  { entityId: "stability-ai", domains: ["stability.ai"] },
+  { entityId: "bytedance", domains: ["seed.bytedance.com", "jimeng.jianying.com"] },
+  { entityId: "adobe", domains: ["adobe.com"] },
+  { entityId: "ideogram", domains: ["ideogram.ai"] },
+  { entityId: "recraft", domains: ["recraft.ai"] },
+  { entityId: "comfy", domains: ["comfy.org"] },
   { entityId: "openai", domains: ["openai.com"] },
   { entityId: "anthropic", domains: ["anthropic.com", "claude.com"] },
   { entityId: "google", domains: ["deepmind.google", "ai.google", "blog.google"] },
